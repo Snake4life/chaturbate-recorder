@@ -2,6 +2,7 @@ const youtubedl = require('youtube-dl');
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 
+if(!fs.existsSync('recordings/')) fs.mkdirSync('recordings/');
 const config = require('./config.js');
 
 var recording = [];
@@ -30,21 +31,21 @@ async function checkModel(username){
 
 async function checkModels(){
     for(model in recording){
+        if(recording[model]){
+            console.log(model, "already recording");
+            continue;
+        }
         console.log("Checking", model);
         let url = await checkModel(model);
         if(url == null){
             console.log(model, "isn't live");
             continue;
         }
-        if(recording[model]){
-            console.log(model, "already recording");
-            continue;
-        }
         recording[model] = ffmpeg(url).audioCodec('copy').videoCodec('copy').on('end', function(){
             recording[model] = false;
             console.log(model, "ended recording");
-        }).save(`recordings/${model + new Date().toUTCString()}.mkv`);
-        console.log("Started recording". model);
+        }).save(`recordings/${model}_${new Date().toISOString().replace('T', '_').replace(':', '_').split('.')[0]}.mkv`);
+        console.log("Started recording", model);
     }
 }
 
