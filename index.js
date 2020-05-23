@@ -49,4 +49,5 @@ async function checkModels(){
     }
 }
 
+checkModels();
 setInterval(checkModels, config.refresh * 1000);
