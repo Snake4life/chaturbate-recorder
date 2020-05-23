@@ -44,7 +44,7 @@ async function checkModels(){
         recording[model] = ffmpeg(url).audioCodec('copy').videoCodec('copy').on('end', function(){
             recording[model] = false;
             console.log(model, "ended recording");
-        }).save(`recordings/${model}_${new Date().toISOString().replace('T', '_').replace(':', '_').split('.')[0]}.mkv`);
+        }).save(`recordings/${model}_${new Date().toISOString().replace('T', '_').replace(/:/g, '-').split('.')[0]}.mkv`);
         console.log("Started recording", model);
     }
 }
