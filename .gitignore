@@ -1,3 +1,5 @@
 node_modules/
 package-lock.json
 recordings/
+.vscode
+process.log

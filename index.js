@@ -4,6 +4,7 @@ const ffmpeg = require('fluent-ffmpeg');
 
 if(!fs.existsSync('recordings/')) fs.mkdirSync('recordings/');
 const config = require('./config.js');
+var logstream = fs.createWriteStream('process.log', {flags:'a'});
 
 var recording = [];
 for(model of config.models){
@@ -41,11 +42,14 @@ async function checkModels(){
             console.log(model, "isn't live");
             continue;
         }
+        const fileName = `${model}_${new Date().toISOString().replace('T', '_').replace(/:/g, '-').split('.')[0]}.mkv`;
         recording[model] = ffmpeg(url).audioCodec('copy').videoCodec('copy').on('end', function(){
             recording[model] = false;
             console.log(model, "ended recording");
-        }).save(`recordings/${model}_${new Date().toISOString().replace('T', '_').replace(/:/g, '-').split('.')[0]}.mkv`);
+            logstream.write(`${new Date().toUTCString()} Finished recording ${fileName}\n`);
+        }).save(`recordings/${fileName}.mkv`);
         console.log("Started recording", model);
+        logstream.write(`${new Date().toUTCString()} Started recording ${fileName}\n`);
     }
 }
 
