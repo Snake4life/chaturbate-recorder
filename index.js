@@ -47,7 +47,7 @@ async function checkModels(){
             recording[model] = false;
             console.log(model, "ended recording");
             logstream.write(`${new Date().toUTCString()} Finished recording ${fileName}\n`);
-        }).save(`recordings/${fileName}.mkv`);
+        }).save(`recordings/${fileName}`);
         console.log("Started recording", model);
         logstream.write(`${new Date().toUTCString()} Started recording ${fileName}\n`);
     }
